@@ -20,8 +20,8 @@ const allIgnoreStudios = []
 const manIgnoreStudios = GM_getValue("ignoreStudios", [])
 // fetch from remote
 const ignoreLists = [
-  "https://raw.githubusercontent.com/feederbox826/userscripts/main/static/stashdb-rm/gay-studios.json", // gay studios
-  //"", // trans studios
+  // "https://raw.githubusercontent.com/feederbox826/userscripts/main/static/stashdb-rm/gay-studios.json", // gay studios
+  //"https://raw.githubusercontent.com/feederbox826/userscripts/main/static/stashdb-rm/trans-studios.json", // trans studios
 ]
 let ignoreListsCache = GM_getValue("ignoreListsCache", [])
 let ignoreListsCacheDate = GM_getValue("ignoreListsCacheDate", 0)
