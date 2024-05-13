@@ -1,6 +1,7 @@
 // monkeypatch window fetch to intercept graphQL requests
 const { fetch: originalFetch } = unsafeWindow
 
+if (unsafeWindow.fbox826) return
 // gqlListener.addEventListener('response', (e) => console.log(e.detail))
 
 const gqlListener = new EventTarget()
