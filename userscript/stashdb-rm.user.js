@@ -7,29 +7,40 @@
 // @connect      localhost:9999
 // @grant        GM_getValue
 // @grant        GM_setValue
-// @grant        GM_unsafeWindow
-// @run-at       document-idle
+// @run-at       document-start
 // @author       feederbox826
-// @require      https://raw.githubusercontent.com/feederbox826/plugins/main/requires/gql-intercept.js
+// @require      https://raw.githubusercontent.com/feederbox826/userscripts/main/requires/gql-intercept.js
 // @updateURL    https://github.com/feederbox826/userscripts/raw/main/userscript/stashdb-rm.user.js
 // @downloadURL  https://github.com/feederbox826/userscripts/raw/main/userscript/stashdb-rm.user.js
 // ==/UserScript==
 
 // config setup
 // set up ignoreStudios
-const ignoreStudios = GM_getValue("ignoreStudios", [])
+const allIgnoreStudios = []
+const manIgnoreStudios = GM_getValue("ignoreStudios", [])
 // fetch from remote
 const ignoreLists = [
-  //"", // gay studios
+  "https://raw.githubusercontent.com/feederbox826/userscripts/main/static/stashdb-rm/gay-studios.json", // gay studios
   //"", // trans studios
 ]
-const ignoreListsCache = GM_getValue("ignoreListsCache", [])
-const ignoreListsCacheDate = GM_getValue("ignoreListsCacheDate", 0)
+let ignoreListsCache = GM_getValue("ignoreListsCache", [])
+let ignoreListsCacheDate = GM_getValue("ignoreListsCacheDate", 0)
 // if no cache or cache is older than 10 days
 try {
+  allIgnoreStudios.push(...manIgnoreStudios)
   if ((ignoreLists.length && ignoreListsCache.length == 0)
-    || Date.now() - ignoreListsCacheDate > 864000000)
-    for (const list of ignoreLists) ignoreStudios.push(...list)
+    || Date.now() - ignoreListsCacheDate > 864000000) {
+    for (const list of ignoreLists) {
+      const listContent = await fetch(list)
+        .then(res => res.json())
+      allIgnoreStudios.push(...listContent)
+    }
+    GM_setValue("ignoreListsCache", ignoreListsCache)
+    GM_setValue("ignoreListsCacheDate", Date.now())
+  } else {
+    console.log("Using cached ignoreLists")
+    allIgnoreStudios.push(...ignoreListsCache)
+  }
 } catch(e) {
   console.error(e)
 }
@@ -43,13 +54,10 @@ function wfke(selector, callback) {
 }
 // response interceptor
 const rmInterceptor = (data) => {
-  console.log('intercepted')
   if (!data.data.queryScenes) return data
-  console.log("oldlen", data.data.queryScenes.scenes.length)
   let scenes = data.data.queryScenes.scenes
-    .filter(scene => !ignoreStudios.includes(scene.studio.id))
+    .filter(scene => !allIgnoreStudios.includes(scene.studio.id))
   // return filtered data
-  console.log("newlen", scenes.length)
   return ({ data: {
     queryScenes: {
       ...data.data.queryScenes,
@@ -65,7 +73,7 @@ function markScenes() {
   document.querySelectorAll(".SceneCard.card").forEach(card => {
     // get studio id
     const studioid = card.querySelector("a.SceneCard-studio-name").href.split("/")[2]
-    if (ignoreStudios.includes(studioid)) card.remove() //remove if match
+    if (manIgnoreStudios.includes(studioid)) card.remove() //remove if match
   });
 }
 
@@ -77,8 +85,8 @@ const runPage = () => {
 // add hide button to /studio page
 function hideStudio(e) {
   const id = location.pathname.split("/").pop();
-  ignoreStudios.push(id);
-  GM_setValue("ignoreStudios", ignoreStudios);
+  manIgnoreStudios.push(id);
+  GM_setValue("ignoreStudios", manIgnoreStudios);
   e.target.textContent = "Ignored";
   e.target.disabled = true;
 }
@@ -98,7 +106,7 @@ function addIgnoreButton() {
   parent.prepend(hideButton)
   // check if already hidden
   const id = location.pathname.split("/").pop();
-  if (ignoreStudios.includes(id)) {
+  if (allIgnoreStudios.includes(id)) {
     hideButton.textContent = "Ignored";
     hideButton.disabled = true;
   }
