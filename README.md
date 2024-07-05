@@ -6,7 +6,7 @@
 [stashdb-diff](https://github.com/feederbox826/plugins/raw/main/userscript/stashdb-diff.user.js)
 - adds text diff to stashdb detail change boxes
 
-[stashdb-link-chip](https://github.com/feederbox826/plugins/raw/main/userscript/stashdb-link-chip.user.js)
+[stashdb-link-chip](https://github.com/feederbox826/userscripts/raw/main/userscript/stashdb-link-chip.user.js)
 - Creates info chips from generic `/edit/xyz`, `/studio/xyz`, `scene/xyz` links
 - add fingerprint count to scenes/ studios/ performers pending deletion as `| x FPs / x Total`, with FPs being the number of unique fingerprints and Total being the total number of submissions
 - adds chip to linked edits showing information at a glance in the format `Operation, Type • Vote Status, Current Votes, Your Vote • edit ID`
