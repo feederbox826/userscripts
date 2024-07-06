@@ -1,9 +1,9 @@
 # Userscripts
 
-[db-noto-color](https://github.com/feederbox826/plugins/raw/main/userscript/db-noto-color.user.js)
+[db-noto-color](https://github.com/feederbox826/userscripts/raw/main/userscript/db-noto-color.user.js)
 - replace emojis with Noto Color Emoji for full support
 
-[stashdb-diff](https://github.com/feederbox826/plugins/raw/main/userscript/stashdb-diff.user.js)
+[stashdb-diff](https://github.com/feederbox826/userscripts/raw/main/userscript/stashdb-diff.user.js)
 - adds text diff to stashdb detail change boxes
 
 [stashdb-link-chip](https://github.com/feederbox826/userscripts/raw/main/userscript/stashdb-link-chip.user.js)
@@ -20,8 +20,8 @@ Examples:
 `✨🎭 • ⏳1❓ • 1c1f9765`: New Performer - Pending with 1 upvote, I have not voted  
 `✨🎞️ • ⏳1👍 • cab039d4`: New Scene - Pending with 1 upvote, I have upvoted  
 
-[stashdb-relative-date](https://github.com/feederbox826/plugins/raw/main/userscript/stashdb-relative-date.user.js)
+[stashdb-relative-date](https://github.com/feederbox826/userscripts/raw/main/userscript/stashdb-relative-date.user.js)
 - adds relative dates to stashDB in Year, Month, (Week), Day
 
-[twitter-media-unblur](https://github.com/feederbox826/plugins/raw/main/userscript/twitter-media-unblur.user.js)
+[twitter-media-unblur](https://github.com/feederbox826/userscripts/raw/main/userscript/twitter-media-unblur.user.js)
 - unblurs all twitter media posts as you scroll

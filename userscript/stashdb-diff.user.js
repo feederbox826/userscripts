@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         stashdb-diff
 // @namespace    feederbox826
-// @version      0.1
+// @version      0.1.1
 // @description  add character-by-character diff for stashdb
 // @author       feederbox826
 // @match        https://fansdb.cc/*
@@ -35,7 +35,6 @@ function toggleDiff() {
     }
 }
 function addToggle(searchElem =  document) {
-    console.log("adding toggle")
     // check for existing toggle
     const toggle = document.createElement("button");
     toggle.type = "button"
@@ -44,7 +43,7 @@ function addToggle(searchElem =  document) {
     toggle.id = "diff-toggle"
     toggle.onclick = toggleDiff
     const aRow = searchElem.querySelector(".EditDiff.bg-danger")
-    if (!aRow) return console.log("no diff found")
+    if (!aRow) return
     if (searchElem.querySelector("#diff-toggle")) return console.log("toggle already exists")
     const allHeaders = aRow.parentNode.parentNode.parentNode.childNodes
     for (const header of allHeaders) {
