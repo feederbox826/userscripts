@@ -1,22 +1,15 @@
 // ==UserScript==
 // @name         stashdb-relative-date
 // @namespace    feederbox826
-// @version      0.1
+// @version      0.1.1
 // @description  adds relative dates to stashdb
 // @author       feederbox826
 // @match        https://fansdb.cc/*
 // @match        https://stashdb.org/*
 // @run-at       document-idle
+// @require      https://raw.githubusercontent.com/feederbox826/userscripts/main/requires/title-obs.js
 // ==/UserScript==
 
-let paginationObserved = false;
-
-// wait for visible key elements
-function wfke(selector, callback) {
-  var el = document.querySelector(selector);
-  if (el) return callback(el);
-  setTimeout(wfke, 100, selector, callback);
-}
 function addRelativeDate(elem) {
   const text = elem.textContent;
   if (text.includes("ago")) return;
@@ -56,26 +49,15 @@ const selectors = {
   sceneCard: ".scene-info.card>.card-header>h6",
 };
 
-function observePagination() {
-  if (paginationObserved) return;
-  // pagination observer
-  new MutationObserver(() => runPage()).observe(
-    document.querySelector("ul.pagination"),
-    { attributes: true, subtree: true },
-  );
-  paginationObserved = true;
-}
 function runPage() {
   // add relative date to performer page
   wfke(".PerformerInfo", performerDate);
   // add relative date to all scenes
   wfke(".SceneCard", sceneListDate);
   wfke(".scene-info.card", scenePageDate);
-  wfke("ul.pagination", observePagination);
 }
 
 // change observer
-new MutationObserver(() => runPage()).observe(document.querySelector("title"), {
-  childList: true,
-});
+changeObs.addEventListener("titleChange", runPage);
+changeObs.addEventListener("pagination", runPage);
 runPage();

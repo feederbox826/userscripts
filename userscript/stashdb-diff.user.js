@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         stashdb-diff
 // @namespace    feederbox826
-// @version      0.1.1
+// @version      0.1.2
 // @description  add character-by-character diff for stashdb
 // @author       feederbox826
 // @match        https://fansdb.cc/*
@@ -9,6 +9,7 @@
 // @run-at       document-idle
 // @grant        GM_addStyle
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jsdiff/2.0.2/diff.js
+// @require      https://raw.githubusercontent.com/feederbox826/userscripts/main/requires/title-obs.js
 // ==/UserScript==
 
 GM_addStyle(`
@@ -21,12 +22,6 @@ diff-ins {
     background-color: rgba(var(--bs-success-rgb),var(--bs-bg-opacity));
 }`)
 
-// wait for visible key elements
-function wfke(selector, callback) {
-    var el = document.querySelector(selector);
-    if (el) return callback();
-    setTimeout(wfke, 100, selector, callback);
-}
 function toggleDiff() {
     const diffElems = ["#diff-aRow", "#diff-bRow", "#diff-result"]
     for (const selector of diffElems) {
@@ -97,11 +92,8 @@ function batchAddToggle() {
         addToggle(elem)
     }
 }
-// change observer
-new MutationObserver(() => {
+
+changeObs.addEventListener("titleChange", () => {
     wfke(".EditDiff", batchAddToggle)
     addToggle()
-}).observe(
-    document.querySelector('title'),
-    { childList: true }
-);
+})

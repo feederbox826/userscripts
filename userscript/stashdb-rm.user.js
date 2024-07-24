@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         stashdb-rm
 // @namespace    feederbox
-// @version      1.0.0
+// @version      1.0.1
 // @description  Remove scenes from loaded studios on stashdb.org
 // @match        https://stashdb.org/*
 // @connect      localhost:9999
@@ -10,6 +10,7 @@
 // @run-at       document-start
 // @author       feederbox826
 // @require      https://raw.githubusercontent.com/feederbox826/userscripts/main/requires/gql-intercept.js
+// @require      https://raw.githubusercontent.com/feederbox826/userscripts/main/requires/title-obs.js
 // @updateURL    https://github.com/feederbox826/userscripts/raw/main/userscript/stashdb-rm.user.js
 // @downloadURL  https://github.com/feederbox826/userscripts/raw/main/userscript/stashdb-rm.user.js
 // ==/UserScript==
@@ -113,7 +114,5 @@ function addIgnoreButton() {
 }
 
 // navigation observer
-new MutationObserver(() => runPage()).observe(document.querySelector("title"), {
-  childList: true,
-})
+changeObs.addEventListener("titleChange", runPage)
 runPage()
