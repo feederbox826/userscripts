@@ -1,4 +1,5 @@
 const changeObs = new EventTarget();
+let paginationObserved = false;
 
 function wfke(selector, callback) {
     var el = document.querySelector(selector);
