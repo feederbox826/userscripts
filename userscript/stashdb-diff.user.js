@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         stashdb-diff
 // @namespace    feederbox826
-// @version      0.1.2
+// @version      0.2.0
 // @description  add character-by-character diff for stashdb
 // @author       feederbox826
 // @match        https://fansdb.cc/*
@@ -29,7 +29,7 @@ function toggleDiff() {
         target.style.display = (target.style.display == "none") ? "block" : "none"
     }
 }
-function addToggle(searchElem =  document) {
+function addToggle(searchElem = document) {
     // check for existing toggle
     const toggle = document.createElement("button");
     toggle.type = "button"
@@ -92,8 +92,22 @@ function batchAddToggle() {
         addToggle(elem)
     }
 }
+function sceneEditWatch() {
+    // listen for confirm button
+    const confirmBtn = document.querySelector('.SceneForm button[data-rr-ui-event-key="confirm"]')
+    confirmBtn.addEventListener("click", () => {
+        setTimeout(() => {
+            addToggle(document.querySelector(".tab-content"))
+        }, 500)
+    })
+}
 
 changeObs.addEventListener("titleChange", () => {
     wfke(".EditDiff", batchAddToggle)
     addToggle()
+})
+
+// on SceneForm, listen for Confirm button click
+changeObs.addEventListener("titleChange", () => {
+    wfke(".SceneForm", sceneEditWatch)
 })
