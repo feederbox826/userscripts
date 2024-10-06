@@ -1,10 +1,14 @@
 # Userscripts
 
+## Stash-Box (StashDB/ FansDB)
 [db-noto-color](https://github.com/feederbox826/userscripts/raw/main/userscript/db-noto-color.user.js)
 - replace emojis with Noto Color Emoji for full support
 
 [stashdb-diff](https://github.com/feederbox826/userscripts/raw/main/userscript/stashdb-diff.user.js)
 - adds text diff to stashdb detail change boxes
+
+[stashdb-img-res](https://github.com/feederbox826/userscripts/raw/main/userscript/stashdb-img-res.user.js)
+- adds image resolution to all stashdb images
 
 [stashdb-link-chip](https://github.com/feederbox826/userscripts/raw/main/userscript/stashdb-link-chip.user.js)
 - Creates info chips from generic `/edit/xyz`, `/studio/xyz`, `scene/xyz` links
@@ -22,6 +26,13 @@ Examples:
 
 [stashdb-relative-date](https://github.com/feederbox826/userscripts/raw/main/userscript/stashdb-relative-date.user.js)
 - adds relative dates to stashDB in Year, Month, (Week), Day
+
+## Other
+[redgifs-auto](https://github.com/feederbox826/userscripts/raw/main/userscript/ls-unblur.user.js)
+- Unblur LifeSelector website
+
+[redgifs-auto](https://github.com/feederbox826/userscripts/raw/main/userscript/redgifs-auto.user.js)
+- Auto Unmute / Play / HD redgifs
 
 [twitter-media-unblur](https://github.com/feederbox826/userscripts/raw/main/userscript/twitter-media-unblur.user.js)
 - unblurs all twitter media posts as you scroll
