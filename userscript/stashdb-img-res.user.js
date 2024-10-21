@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         stashdb-img-res
 // @namespace    feederbox826
-// @version      0.1.0
+// @version      0.1.1
 // @description  adds image resolution to stashdb images
 // @author       feederbox826
 // @match        https://fansdb.cc/*
@@ -38,7 +38,6 @@ GM_addStyle(`
     resBox.classList = "img-res"
     resBox.textContent = resolution
     img.after(resBox)
-    console.log("added", resBox)
   }
   
   function addAllRes() {
