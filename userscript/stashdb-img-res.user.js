@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         stashdb-img-res
-// @namespace    feederbox826
-// @version      0.1.1
-// @description  adds image resolution to stashdb images
 // @author       feederbox826
+// @namespace    feederbox.cc
+// @version      0.1.2
+// @description  adds image resolution to stashdb images
 // @match        https://fansdb.cc/*
 // @match        https://stashdb.org/*
 // @run-at       document-idle
 // @grant        GM_addStyle
-// @require      https://raw.githubusercontent.com/feederbox826/userscripts/main/requires/title-obs.js
+// @require      https://feederbox.cc/uscript/requires/title-obs.js
 // ==/UserScript==
 
 GM_addStyle(`

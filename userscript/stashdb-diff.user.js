@@ -1,15 +1,15 @@
 // ==UserScript==
 // @name         stashdb-diff
-// @namespace    feederbox826
-// @version      0.2.0
-// @description  add character-by-character diff for stashdb
 // @author       feederbox826
+// @namespace    feederbox.cc
+// @version      0.2.1
+// @description  add character-by-character diff for stashdb
 // @match        https://fansdb.cc/*
 // @match        https://stashdb.org/*
 // @run-at       document-idle
 // @grant        GM_addStyle
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jsdiff/2.0.2/diff.js
-// @require      https://raw.githubusercontent.com/feederbox826/userscripts/main/requires/title-obs.js
+// @require      https://feederbox.cc/uscript/requires/title-obs.js
 // ==/UserScript==
 
 GM_addStyle(`

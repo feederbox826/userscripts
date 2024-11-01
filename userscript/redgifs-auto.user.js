@@ -1,12 +1,12 @@
 // ==UserScript==
 // @name         redgifs autosettings
-// @namespace    feederbox826
-// @version      0.1.3
+// @namespace    feederbox.cc
+// @version      0.1.4
 // @description  Auto Unmute / Play / HD redgifs
 // @author       feederbox826
 // @match        https://*.redgifs.com/*
 // @icon         https://v3.redgifs.com/favicon-32x32.png
-// @require      https://raw.githubusercontent.com/feederbox826/userscripts/main/requires/wfke.js
+// @require      https://feederbox.cc/uscript/requires/wfke.js
 // ==/UserScript==
 
 const clickButton = el => el.click()

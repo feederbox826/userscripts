@@ -1,14 +1,14 @@
 // ==UserScript==
 // @name         stashdb-link-chip
-// @namespace    feederbox826
-// @version      0.1.1
-// @description  add chips to links in edit queue
+// @namespace    feederbox.cc
 // @author       feederbox826
+// @version      0.1.2
+// @description  add chips to links in edit queue
 // @match        https://fansdb.cc/*
 // @match        https://stashdb.org/*
 // @run-at       document-idle
 // @grant        GM_addStyle
-// @require      https://raw.githubusercontent.com/feederbox826/userscripts/main/requires/title-obs.js
+// @require      https://feederbox.cc/uscript/requires/title-obs.js
 // ==/UserScript==
 
 GM_addStyle(`

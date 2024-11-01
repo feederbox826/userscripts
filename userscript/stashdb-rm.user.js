@@ -1,18 +1,16 @@
 // ==UserScript==
 // @name         stashdb-rm
-// @namespace    feederbox
-// @version      1.0.1
+// @namespace    feederbox.cc
+// @author       feederbox826
+// @version      1.0.2
 // @description  Remove scenes from loaded studios on stashdb.org
 // @match        https://stashdb.org/*
 // @connect      localhost:9999
 // @grant        GM_getValue
 // @grant        GM_setValue
 // @run-at       document-start
-// @author       feederbox826
-// @require      https://raw.githubusercontent.com/feederbox826/userscripts/main/requires/gql-intercept.js
-// @require      https://raw.githubusercontent.com/feederbox826/userscripts/main/requires/title-obs.js
-// @updateURL    https://github.com/feederbox826/userscripts/raw/main/userscript/stashdb-rm.user.js
-// @downloadURL  https://github.com/feederbox826/userscripts/raw/main/userscript/stashdb-rm.user.js
+// @require      https://feederbox.cc/uscript/requires/gql-intercept.js
+// @require      https://feederbox.cc/uscript/requires/title-obs.js
 // ==/UserScript==
 
 // config setup
@@ -21,8 +19,8 @@ const allIgnoreStudios = []
 const manIgnoreStudios = GM_getValue("ignoreStudios", [])
 // fetch from remote
 const ignoreLists = [
-  // "https://raw.githubusercontent.com/feederbox826/userscripts/main/static/stashdb-rm/gay-studios.json", // gay studios
-  //"https://raw.githubusercontent.com/feederbox826/userscripts/main/static/stashdb-rm/trans-studios.json", // trans studios
+  // "https://feederbox.cc/uscript/static/stashdb-rm/gay-studios.json", // gay studios
+  // "https://feederbox.cc/uscript/static/stashdb-rm/trans-studios.json", // trans studios
 ]
 let ignoreListsCache = GM_getValue("ignoreListsCache", [])
 let ignoreListsCacheDate = GM_getValue("ignoreListsCacheDate", 0)

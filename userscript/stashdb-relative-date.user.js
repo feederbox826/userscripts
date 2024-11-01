@@ -1,13 +1,13 @@
 // ==UserScript==
 // @name         stashdb-relative-date
-// @namespace    feederbox826
-// @version      0.1.1
-// @description  adds relative dates to stashdb
+// @namespace    feederbox.cc
 // @author       feederbox826
+// @version      0.1.2
+// @description  adds relative dates to stashdb
 // @match        https://fansdb.cc/*
 // @match        https://stashdb.org/*
 // @run-at       document-idle
-// @require      https://raw.githubusercontent.com/feederbox826/userscripts/main/requires/title-obs.js
+// @require      https://feederbox.cc/uscript/requires/title-obs.js
 // ==/UserScript==
 
 function addRelativeDate(elem) {
