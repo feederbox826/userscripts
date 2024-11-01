@@ -2,25 +2,19 @@
 // @name         fbox-tags checklist
 // @namespace    feederbox.cc
 // @author       feederbox826
-// @version      1.0.0
+// @version      1.0.1
 // @description  Add status boxes to tag names on stashdb
 // @match        https://stashdb.org/*
 // @connect      tags.feederbox.cc
 // @run-at       document-idle
 // @require      https://feederbox.cc/uscript/requires/gql-intercept.js
+// @require      https://feederbox.cc/uscript/requires/wfke.js
 // @grant        unsafeWindow
 // ==/UserScript==
 
-function wfke(selector, callback) {
-  var el = document.querySelector(selector);
-  if (el) return callback(el);
-  setTimeout(wfke, 100, selector, callback);
-}
-
-const BASEURL = "https://tags.feederbox.cc"
-
 async function startPage() {
   console.log("checklist")
+  const BASEURL = "https://tags.feederbox.cc"
   const inventory = await fetch(`${BASEURL}/tags-export.json`)
     .then(r => r.json())
 
