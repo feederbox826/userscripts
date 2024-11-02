@@ -4,6 +4,9 @@
 [db-noto-color](https://feederbox.cc/uscript/userscript/db-noto-color.user.js)
 - replace emojis with Noto Color Emoji for full support
 
+[db-hide-apikey](https://feederbox.cc/uscript/userscript/db-hide-apikey.user.js)
+- blur and hide apikey until hovered
+
 [stashdb-diff](https://feederbox.cc/uscript/userscript/stashdb-diff.user.js)
 - adds text diff to stashdb detail change boxes
 
