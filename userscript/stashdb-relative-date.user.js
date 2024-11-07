@@ -2,7 +2,7 @@
 // @name         stashdb-relative-date
 // @namespace    feederbox.cc
 // @author       feederbox826
-// @version      0.1.2
+// @version      0.1.3
 // @description  adds relative dates to stashdb
 // @match        https://fansdb.cc/*
 // @match        https://stashdb.org/*
@@ -38,7 +38,7 @@ const sceneListDate = (card) => addDate(selectors.sceneList);
 
 function scenePageDate(card) {
   const elem = card.querySelector(selectors.sceneCard);
-  addRelativeDate(elem.childNodes[2]);
+  addRelativeDate(elem.lastChild);
 }
 const addDate = (selector) =>
   document.querySelectorAll(selector).forEach((elem) => addRelativeDate(elem));
