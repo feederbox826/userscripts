@@ -2,7 +2,7 @@
 // @name        stashdb-tag-vid
 // @namespace   feederbox.cc
 // @author      feederbox826
-// @version     1.1
+// @version     1.1.1
 // @description Adds tag videos to stashdb
 // @match       https://stashdb.org/*
 // @grant       GM_addStyle
@@ -65,7 +65,12 @@ function parseAddVidTag(target) {
   addVidTag(vidPath, imgPath, target, tagName)
 }
 
+const checkSrc = src => fetch(src, { method: "HEAD" }).then(res => res.ok)
+
 async function addImgTag(imgPath, target, tagName) {
+  // check if image exists
+  const checkImg = await checkSrc(imgPath)
+  if (!checkImg) return;
   const img = document.createElement("img")
   img.src = imgPath
   img.classList.add("tag-video")
@@ -76,6 +81,9 @@ async function addImgTag(imgPath, target, tagName) {
 }
 
 async function addVidTag(vidPath, imgPath, target, tagName) {
+  // check if video exists
+  const checkVid = await checkSrc(vidPath)
+  if (!checkVid) return addImgTag(imgPath, target, tagName)
   // check if path resolves
   if (target.querySelector("video")) return;
   const video = document.createElement("video");
@@ -88,10 +96,6 @@ async function addVidTag(vidPath, imgPath, target, tagName) {
   video.dataset.tagname = tagName
   video.addEventListener('mouseover', playVideo)
   video.addEventListener('mouseout', stopVideo)
-  video.addEventListener('error', () => {
-    addImgTag(imgPath, target, tagName)
-    video.remove()
-  })
   target.prepend(video)
 }
 
