@@ -2,7 +2,7 @@
 // @name        stashdb-tag-vid
 // @namespace   feederbox.cc
 // @author      feederbox826
-// @version     1.0
+// @version     1.1
 // @description Adds tag videos to stashdb
 // @match       https://stashdb.org/*
 // @grant       GM_addStyle
@@ -10,13 +10,13 @@
 // ==/UserScript==
 
 GM_addStyle(`
-  video.tag-video {
+  .tag-video {
       float: left;
       width: 150px;
       height: 150px;
       margin: 10px;
   }
-  video.tag-video.video-popout {
+  .tag-video.video-popout {
       position: absolute;
       top: 0;
       left: 0;
@@ -25,7 +25,7 @@ GM_addStyle(`
       z-index: 9999;
   }
 `);
-  
+
 const isTag = () => location.href.includes("/tags/");
 const getTagName = () => document.querySelector(".NarrowPage h3>em")?.innerText?.replace(/ /g, "_")
 const delay = ms => new Promise(res => setTimeout(res, ms))
@@ -61,34 +61,43 @@ function parseAddVidTag(target) {
   if (!tagName) return
   // construct video path
   const vidPath = `https://tags.feederbox.cc/by-name/${tagName}`
-  addVidTag(vidPath, target, tagName)
+  const imgPath = `https://tags.feederbox.cc/by-name/img/${tagName}`
+  addVidTag(vidPath, imgPath, target, tagName)
 }
 
-const testVid = (src) =>
-  fetch(src, { method: 'HEAD' })
-    .then(res => res.ok).catch(err => false)
+async function addImgTag(imgPath, target, tagName) {
+  const img = document.createElement("img")
+  img.src = imgPath
+  img.classList.add("tag-video")
+  img.dataset.tagname = tagName
+  img.addEventListener('mouseover', playVideo)
+  img.addEventListener('mouseout', stopVideo)
+  target.prepend(img)
+}
 
-async function addVidTag(src, target, tagName) {
+async function addVidTag(vidPath, imgPath, target, tagName) {
   // check if path resolves
-  const testResult = await testVid(src)
-  if (!testResult) return;
   if (target.querySelector("video")) return;
   const video = document.createElement("video");
-  const propName = ["autoplay", "muted", "loop", "playsinline", "disableRemotePlayback"]
+  const propName = ["autoplay", "muted", "loop", "playsInline", "disableRemotePlayback"]
   propName.forEach(prop => video[prop] = true)
   video.classList.add("tag-video")
   video.volume = 0.5
-  video.src = src
-  video.poster = src
+  video.src = vidPath
+  video.poster = imgPath
   video.dataset.tagname = tagName
   video.addEventListener('mouseover', playVideo)
   video.addEventListener('mouseout', stopVideo)
+  video.addEventListener('error', () => {
+    addImgTag(imgPath, target, tagName)
+    video.remove()
+  })
   target.prepend(video)
 }
 
 function runPage() {
   // if video, remove popout
-  const video = document.querySelector("video.tag-video")
+  const video = document.querySelector(".tag-video")
   // check if matches current tag name
   if (video && (!isTag || video.dataset.tagname !== getTagName())) video.remove()
   if (!isTag()) return;
@@ -99,7 +108,7 @@ new MutationObserver(() => runPage()).observe(document.querySelector("title"), {
   childList: true,
 });
 document.addEventListener("visibilitychange", () => {
-  const allVideos = document.querySelectorAll(".tag-video")
+  const allVideos = document.querySelectorAll("video.tag-video")
   if (document.hidden) {
     allVideos.forEach(video => video.muted = true)
     // setTimeout to auto-stop videos after 2s of hidden
