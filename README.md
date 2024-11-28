@@ -37,6 +37,10 @@ Examples:
 [tags-checklist](https://feederbox.cc/uscript/userscript/tags-checklist.user.js)
 - indicates tags on StashDB with media on `tags.feederbox.cc`
 
+## Discourse
+[disco-blurimg](https://feederbox.cc/uscript/userscript/disco-blurimg.user.js)
+- blur images on discourse until hovered
+
 ## Other
 [redgifs-auto](https://feederbox.cc/uscript/userscript/ls-unblur.user.js)
 - Unblur LifeSelector website
