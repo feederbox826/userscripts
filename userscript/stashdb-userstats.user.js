@@ -2,7 +2,7 @@
 // @name        stashdb-userstats
 // @namespace   feederbox.cc
 // @author      feederbox826
-// @version     0.0.1
+// @version     0.0.2
 // @description Adds user stats to stashdb
 // @match       https://stashdb.org/*
 // @match       https://fansdb.cc/*
@@ -18,14 +18,14 @@ const editThreshold = (edit_ratio) =>
   : edit_ratio = 0 ? "❓"
   : "🟥"
 
-const voteThresholds = (vote_total) =>
-  vote_total == 0 ? "0"
-  : vote_total >= 5000 ? "5000+"
-  : vote_total >= 1000 ? "1000+"
-  : vote_total >= 500 ? "500+"
-  : vote_total >= 100 ? "100+"
-  : vote_total >= 50 ? "50+"
-  : vote_total >= 10 ? "10+"
+const roundThreshold = (number) =>
+  number == 0 ? "0"
+  : number >= 5000 ? "5000+"
+  : number >= 1000 ? "1000+"
+  : number >= 500 ? "500+"
+  : number >= 100 ? "100+"
+  : number >= 50 ? "50+"
+  : number >= 10 ? "10+"
   : "<10"
 
 GM_addStyle(`
@@ -157,13 +157,13 @@ const generateUserCard = (user) => {
     return card;
   }
   // show user stats
-  const editElem = document.createElement("span");
-  editElem.textContent = editThreshold(user.edit_ratio);
-  editElem.title = `${Math.floor(user.edit_ratio * 100)}%\n${user.edit_accept} ✅\n${user.edit_reject} ❌`;
   const voteElem = document.createElement("span");
-  voteElem.textContent = voteThresholds(user.vote_total);
+  voteElem.textContent = "🗳️"
   voteElem.title = `${user.vote_accept} 👍\n${user.vote_reject} 👎\n${user.vote_abstain} 🤷`;
-  card.append(editElem, voteElem);
+  const editElem = document.createElement("span");
+  editElem.textContent = `${editThreshold(user.edit_ratio)}${roundThreshold(user.edit_accept)}`;
+  editElem.title = `${Math.floor(user.edit_ratio * 100)}%\n${user.edit_accept} ✅\n${user.edit_reject} ❌`;
+  card.append(voteElem, editElem);
   return card;
 };
 
