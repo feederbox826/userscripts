@@ -30,6 +30,9 @@ Examples:
 [stashdb-relative-date](https://feederbox.cc/uscript/userscript/stashdb-relative-date.user.js)
 - adds relative dates to stashDB in Year, Month, (Week), Day
 
+[stashdb-userstats](https://feederbox.cc/uscript/userscript/stashdb-userstats.user.js)
+- adds at-a-glance submitter stats to stashdb+
+
 ## StashDB (tag.feederbox.cc)
 [stashdb-tag-vid](https://feederbox.cc/uscript/userscript/stashdb-tag-vid.user.js)
 - adds tag videos from `tags.feederbox.cc` to stashdb
