@@ -2,7 +2,7 @@
 // @name        stashdb-userstats
 // @namespace   feederbox.cc
 // @author      feederbox826
-// @version     0.0.2
+// @version     0.1.0
 // @description Adds user stats to stashdb
 // @match       https://stashdb.org/*
 // @match       https://fansdb.cc/*
@@ -28,6 +28,8 @@ const roundThreshold = (number) =>
   : number >= 10 ? "10+"
   : "<10"
 
+const DEBUG_SKIP_CACHE = false;
+
 GM_addStyle(`
   .user-card:before {
     content: "("
@@ -37,6 +39,7 @@ GM_addStyle(`
   }
   .user-card {
     padding-left: 1ch;
+    white-space: pre;
   }
 `);
 
@@ -44,8 +47,17 @@ const DAY = 24 * 60 * 60 * 1000;
 const MONTH = 30 * DAY;
 const YEAR = 365 * DAY;
 
+const callGQL = async (query, variables = {}) =>
+  fetch("/graphql", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ query, variables })
+  })
+    .then((res) => res.json())
+    .then((res) => res.data)
+
 class User {
-  constructor(user, edit) {
+  constructor(user, edit, opStats, typeStats) {
     this.id = user.id;
     this.last_update = new Date();
     this.edit_accept =
@@ -66,16 +78,41 @@ class User {
       user.vote_count.reject + user.vote_count.immediate_reject;
     // total votes
     this.vote_total = this.vote_abstain + this.vote_accept + this.vote_reject;
+    // total edits
+    this.total_edits = this.edit_accept + this.edit_reject + this.edit_pending;
     // accepted / (accepted + rejected)
-    this.edit_ratio = this.edit_accept / (this.edit_accept + this.edit_reject);
+    this.edit_ratio = this.edit_accept / this.total_edits;
     // <1mo since first edit closed, or no edits closed
     this.user_new = this.edit_first
       ? Date.now() - this.edit_first < MONTH
       : true;
+    this.operation_stats = {
+      create: opStats[0],
+      modify: opStats[1],
+      destroy: opStats[2],
+      merge: opStats[3],
+    }
+    this.operation_percentage = {
+      create: editPercentage(opStats[0], this.total_edits),
+      modify: editPercentage(opStats[1], this.total_edits),
+      destroy: editPercentage(opStats[2], this.total_edits),
+      merge: editPercentage(opStats[3], this.total_edits),
+    }
+    this.type_stats = {
+      scene: typeStats[0],
+      studio: typeStats[1],
+      performer: typeStats[2],
+      tag: typeStats[3],
+    }
+    this.type_percentage = {
+      scene: editPercentage(typeStats[0], this.total_edits),
+      studio: editPercentage(typeStats[1], this.total_edits),
+      performer: editPercentage(typeStats[2], this.total_edits),
+      tag: editPercentage(typeStats[3], this.total_edits),
+    }
   }
 }
 let paginationObserved = false;
-
 
 const openDB = () =>
   idb.openDB("stashdb-userstats", 1, {
@@ -87,54 +124,87 @@ const openDB = () =>
 const getUser = async (username) => {
   const db = await openDB();
   const dbUser = await db.get("users", username);
-  if (dbUser) {
+  if (dbUser && !DEBUG_SKIP_CACHE) {
     if (Date.now() - dbUser.last_update < DAY) return dbUser;
   }
   console.log("not cached");
   // if not in db, or not stable, fetch from server
   const user = await fetchUser(username);
-  const edits = await fetchEdit(user.data.findUser.id);
-  const liveUser = new User(user.data.findUser, edits.data.queryEdits);
+  const firstEdit = await fetchFirstEdit(user.findUser.id);
+  const userOpStats = await fetchAllOpStats(user.findUser.id);
+  const userTypeStats = await fetchAllTypeStats(user.findUser.id);
+  const liveUser = new User(user.findUser, firstEdit.queryEdits, userOpStats, userTypeStats);
   await cacheUser(username, liveUser);
   return liveUser;
 };
 
-const fetchUser = (username) =>
-  fetch("/graphql", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      query: `query ($username: String) {
-        findUser(username: $username) {
-        id
-        edit_count {
-            accepted immediate_accepted
-            rejected immediate_rejected canceled
-            pending
-        } vote_count {
-            abstain
-            accept immediate_accept
-            reject immediate_reject
-        }}}`,
-      variables: { username },
-    }),
-  }).then((res) => res.json());
+const fetchUser = (username) => {
+  const query = `query ($username: String) {
+    findUser(username: $username) {
+    id
+    edit_count {
+        accepted immediate_accepted
+        rejected immediate_rejected canceled
+        pending
+    } vote_count {
+        abstain
+        accept immediate_accept
+        reject immediate_reject
+    }}}`
+  const variables = { username }
+  return callGQL(query, variables)
+}
 
-const fetchEdit = (user_id) =>
-  fetch("/graphql", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      query: `query ($user_id: ID) {
-        queryEdits(
-        input: {
-          user_id: $user_id
-          status: ACCEPTED page: 1 per_page: 1
-          sort: CLOSED_AT direction: ASC
-        }) { edits { closed }}}`,
-      variables: { user_id },
-    }),
-  }).then((res) => res.json());
+const fetchFirstEdit = (user_id) => {
+  const query = `query ($user_id: ID) {
+    queryEdits(
+    input: {
+      user_id: $user_id
+      status: ACCEPTED page: 1 per_page: 1
+      sort: CLOSED_AT direction: ASC
+    }) {
+      edits { closed }}}`
+  const variables = { user_id }
+  return callGQL(query, variables)
+}
+
+const fetchTypeStat = (user_id, type) => {
+  const query = `query ($user_id: ID, $type: TargetTypeEnum) {
+    queryEdits(
+    input: {
+        user_id: $user_id
+        target_type: $type
+    }) { count }}`
+  const variables = { user_id, type }
+  return callGQL(query, variables)
+}
+
+const fetchOpStat = (user_id, operation) => {
+  const query = `query ($user_id: ID, $operation: OperationEnum) {
+    queryEdits(
+    input: {
+        user_id: $user_id
+        operation: $operation
+    }) { count }}`
+  const variables = { user_id, operation }
+  return callGQL(query, variables)
+}
+
+const fetchAllOpStats = (user_id) => {
+  const operations = ["CREATE", "MODIFY", "DESTROY", "MERGE"];
+  return Promise.all(
+    operations.map((operation) => fetchOpStat(user_id, operation).then((res) => res.queryEdits.count)),
+  );
+};
+
+const fetchAllTypeStats = (user_id) => {
+  const types = ["SCENE", "STUDIO", "PERFORMER", "TAG"];
+  return Promise.all(
+    types.map((type) => fetchTypeStat(user_id, type).then((res) => res.queryEdits.count)),
+  );
+};
+
+const editPercentage = (num, total) => `${Math.floor(num/total*100)}%`
 
 const cacheUser = async (username, data) => {
   const db = await openDB();
@@ -163,7 +233,18 @@ const generateUserCard = (user) => {
   const editElem = document.createElement("span");
   editElem.textContent = `${editThreshold(user.edit_ratio)}${roundThreshold(user.edit_accept)}`;
   editElem.title = `${Math.floor(user.edit_ratio * 100)}%\n${user.edit_accept} ✅\n${user.edit_reject} ❌`;
-  card.append(voteElem, editElem);
+  const opElem = document.createElement("span");
+  opElem.textContent = "🔨";
+  opElem.title = `${user.operation_stats.create} ✨\n${user.operation_stats.modify} 🛠️\n${user.operation_stats.destroy} 🗑️\n${user.operation_stats.merge} 🔗`;
+  const targetElem = document.createElement("span");
+  targetElem.textContent = "🎯"
+  targetElem.title = `${user.type_stats.scene} 🎞️\n${user.type_stats.studio} 🎬\n${user.type_stats.performer} 🎭\n${user.type_stats.tag} 🏷️`;
+  card.append(voteElem, editElem, opElem, targetElem);
+  // add click to toggle
+  card.addEventListener("click", (evt) => {
+    card.textContent = card.parentElement.title;
+    evt.preventDefault()
+  });
   return card;
 };
 
@@ -179,6 +260,16 @@ votes:
   accept: ${user.vote_accept}
   reject: ${user.vote_reject}
   abstain: ${user.vote_abstain}
+operations:
+  create: ${user.operation_stats.create} (${editPercentage(user.operation_stats.create, user.total_edits)})
+  modify: ${user.operation_stats.modify} (${editPercentage(user.operation_stats.modify, user.total_edits)})
+  destroy: ${user.operation_stats.destroy} (${editPercentage(user.operation_stats.destroy, user.total_edits)})
+  merge: ${user.operation_stats.merge} (${editPercentage(user.operation_stats.merge, user.total_edits)})
+types:
+  scene: ${user.type_stats.scene} (${editPercentage(user.type_stats.scene, user.total_edits)})
+  studio: ${user.type_stats.studio} (${editPercentage(user.type_stats.studio, user.total_edits)})
+  performer: ${user.type_stats.performer} (${editPercentage(user.type_stats.performer, user.total_edits)})
+  tag: ${user.type_stats.tag} (${editPercentage(user.type_stats.tag, user.total_edits)})
 `;
 
 async function setupPage() {
