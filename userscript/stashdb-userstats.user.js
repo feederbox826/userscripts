@@ -2,7 +2,7 @@
 // @name        stashdb-userstats
 // @namespace   feederbox.cc
 // @author      feederbox826
-// @version     0.1.0
+// @version     0.1.1
 // @description Adds user stats to stashdb
 // @match       https://stashdb.org/*
 // @match       https://fansdb.cc/*
@@ -18,16 +18,17 @@ const editThreshold = (edit_ratio) =>
   : edit_ratio = 0 ? "❓"
   : "🟥"
 
-const roundThreshold = (number) =>
-  number == 0 ? "0"
-  : number >= 5000 ? "5000+"
-  : number >= 1000 ? "1000+"
-  : number >= 500 ? "500+"
-  : number >= 100 ? "100+"
-  : number >= 50 ? "50+"
-  : number >= 10 ? "10+"
-  : "<10"
+const roundThreshold = (number) => {
+  if (number == 0) return "0";
+  else if (number < 10) return "<10";
+  const thresholds = [5000, 4000, 3000, 2000, 1000, 500, 100, 50, 10];
+  for (const threshold of thresholds) {
+    if (number >= threshold) return `${threshold}+`;
+  }
+}
 
+// clear cache if version mismatch
+const CACHEVERSION = 1;
 const DEBUG_SKIP_CACHE = false;
 
 GM_addStyle(`
@@ -115,9 +116,14 @@ class User {
 let paginationObserved = false;
 
 const openDB = () =>
-  idb.openDB("stashdb-userstats", 1, {
-    upgrade(db) {
-      db.createObjectStore("users", { keyPath: "username" });
+  idb.openDB("stashdb-userstats", 2, {
+    upgrade(db, oldver, newver) {
+     if (oldver < 1) {
+        db.createObjectStore("users", { keyPath: "username" });
+        db.createObjectStore("config");
+      } else if (newver = 2) {
+        db.createObjectStore("config");
+      }
     },
   });
 
@@ -295,6 +301,18 @@ async function setupPage() {
     });
   });
 }
+
+async function checkCacheVersion() {
+  // get current cache version
+  const db = await openDB();
+  const cacheVersion = await db.get("config", "cacheversion");
+  if (cacheVersion !== CACHEVERSION) {
+    // clear cache
+    await db.clear("users");
+    await db.put("config", CACHEVERSION, "cacheversion");
+  }
+}
+checkCacheVersion()
 
 async function runPage() {
   wfke(".EditCard", () => setupPage());
