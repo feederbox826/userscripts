@@ -2,7 +2,7 @@
 // @name         stashdb-relative-date
 // @namespace    feederbox.cc
 // @author       feederbox826
-// @version      0.1.3
+// @version      0.2.0
 // @description  adds relative dates to stashdb
 // @match        https://fansdb.cc/*
 // @match        https://stashdb.org/*
@@ -33,8 +33,7 @@ function addRelativeDate(elem) {
   elem.textContent += ` (${relativeDate} ago)`;
 }
 
-const performerDate = (card) => addDate(selectors.performerInfo);
-const sceneListDate = (card) => addDate(selectors.sceneList);
+const sceneListDate = () => addDate(selectors.sceneList);
 
 function scenePageDate(card) {
   const elem = card.querySelector(selectors.sceneCard);
@@ -44,14 +43,11 @@ const addDate = (selector) =>
   document.querySelectorAll(selector).forEach((elem) => addRelativeDate(elem));
 
 const selectors = {
-  performerInfo: "table tr:nth-child(2)>td:nth-child(2)",
   sceneList: ".SceneCard>.card-footer>.text-muted>strong",
   sceneCard: ".scene-info.card>.card-header>h6",
 };
 
 function runPage() {
-  // add relative date to performer page
-  wfke(".PerformerInfo", performerDate);
   // add relative date to all scenes
   wfke(".SceneCard", sceneListDate);
   wfke(".scene-info.card", scenePageDate);
