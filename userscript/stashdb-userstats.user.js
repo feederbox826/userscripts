@@ -2,7 +2,7 @@
 // @name        stashdb-userstats
 // @namespace   feederbox.cc
 // @author      feederbox826
-// @version     0.1.1
+// @version     0.1.2
 // @description Adds user stats to stashdb
 // @match       https://stashdb.org/*
 // @match       https://fansdb.cc/*
@@ -131,7 +131,7 @@ const getUser = async (username) => {
   const db = await openDB();
   const dbUser = await db.get("users", username);
   if (dbUser && !DEBUG_SKIP_CACHE) {
-    if (Date.now() - dbUser.last_update < DAY) return dbUser;
+    if (Date.now() - dbUser.last_update < (DAY * 1.5)) return dbUser;
   }
   console.log("not cached");
   // if not in db, or not stable, fetch from server
