@@ -2,7 +2,7 @@
 // @name         stashdb-relative-date
 // @namespace    feederbox.cc
 // @author       feederbox826
-// @version      0.2.1
+// @version      0.2.2
 // @description  adds relative dates to stashdb
 // @match        https://fansdb.cc/*
 // @match        https://stashdb.org/*
@@ -11,6 +11,20 @@
 // ==/UserScript==
 
 const validationRegex = /^\d{4}(-\d{2}(-\d{2})?)?/g
+
+function addPerformerYear(elem) {
+  // check for <small>
+  if (elem.querySelector("small")) return;
+  const text = elem.textContent;
+  // we only care about years
+  const diff = new Date() - new Date(text);
+  const diffYears = Math.floor(diff / (1000 * 60 * 60 * 24) / 365);
+  // add <small> element to match stashDB
+  const smallElem = document.createElement("small")
+  smallElem.classList = "text-muted ms-2"
+  smallElem.textContent = `${diffYears} years old`
+  elem.appendChild(smallElem)
+}
 
 function addRelativeDate(elem) {
   const text = elem.textContent;
@@ -38,7 +52,7 @@ function addRelativeDate(elem) {
 }
 
 const sceneListDate = () => addDate(selectors.sceneList);
-const performerPage = () => addDate(selectors.performerPage);
+const performerPage = () => addPerformerYear(document.querySelector(selectors.performerPage));
 
 function scenePageDate(card) {
   const elem = card.querySelector(selectors.sceneCard);
