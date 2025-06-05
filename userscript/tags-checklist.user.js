@@ -2,21 +2,34 @@
 // @name         fbox-tags checklist
 // @namespace    feederbox.cc
 // @author       feederbox826
-// @version      1.0.1
+// @version      1.1.0
 // @description  Add status boxes to tag names on stashdb
 // @match        https://stashdb.org/*
 // @connect      tags.feederbox.cc
 // @run-at       document-idle
 // @require      https://feederbox.cc/uscript/requires/gql-intercept.js
 // @require      https://feederbox.cc/uscript/requires/wfke.js
-// @grant        unsafeWindow
+// @grant        GM_xmlhttpRequest
 // ==/UserScript==
+
+const jsonFetch = async (url) =>
+  new Promise((resolve, reject) => {
+    GM?.xmlhttpRequest ?? GM_xmlhttpRequest({
+      method: "GET",
+      url: url,
+      responseType: "json",
+      onload: (response) => {
+        if (response.status !== 200) reject(new Error(`Failed to fetch ${url}: ${response.statusText}`));
+        resolve(response.response);
+      },
+      onerror: (error) => reject(error)
+    })
+  })
 
 async function startPage() {
   console.log("checklist")
   const BASEURL = "https://tags.feederbox.cc"
-  const inventory = await fetch(`${BASEURL}/tags-export.json`)
-    .then(r => r.json())
+  const inventory = await jsonFetch(`${BASEURL}/tags-export.json`)
 
   const addBox = (parent, txt, href) => {
     const box = document.createElement("a");
@@ -38,15 +51,15 @@ async function startPage() {
 
   function markTags() {
     console.log("marking");
-    const allTags = document.querySelectorAll(".card ul>li>a")
+    const allTags = document.querySelectorAll(".card-body ul>li>a")
     allTags.forEach(tag => markTag(tag))
   }
 
   fbox826.gqlListener.addEventListener("response", async (e) => {
     if (!e.detail.data?.queryTags) return;
-    wfke(".card ul>li", markTags)
+    wfke(".card-body ul>li", markTags)
   });
 
-  wfke(".card ul>li", markTags)
+  wfke(".card-body ul>li", markTags)
 }
 startPage()
