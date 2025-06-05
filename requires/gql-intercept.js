@@ -46,3 +46,4 @@ function gqlIntercept() {
     catch (e) { return response }
   }
 }
+gqlIntercept()
