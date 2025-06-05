@@ -2,7 +2,7 @@
 // @name         stashdb-rm
 // @namespace    feederbox.cc
 // @author       feederbox826
-// @version      1.0.2
+// @version      2.0.0
 // @description  Remove scenes from loaded studios on stashdb.org
 // @match        https://stashdb.org/*
 // @connect      localhost:9999
@@ -13,6 +13,11 @@
 // @require      https://feederbox.cc/uscript/requires/title-obs.js
 // ==/UserScript==
 
+return false
+// broken on serverside
+// broken by https://github.com/stashapp/stash-box/pull/961
+
+/*
 // config setup
 // set up ignoreStudios
 const allIgnoreStudios = []
@@ -114,3 +119,4 @@ function addIgnoreButton() {
 // navigation observer
 changeObs.addEventListener("titleChange", runPage)
 runPage()
+*/
