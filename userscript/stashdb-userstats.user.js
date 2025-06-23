@@ -2,7 +2,7 @@
 // @name        stashdb-userstats
 // @namespace   feederbox.cc
 // @author      feederbox826
-// @version     0.1.2
+// @version     0.1.3
 // @description Adds user stats to stashdb
 // @match       https://stashdb.org/*
 // @match       https://fansdb.cc/*
@@ -285,7 +285,7 @@ async function setupPage() {
   );
   // prefetch usernames
   const usernames = new Set(
-    users.map((userElem) => userElem.href.split("/").pop()),
+    users.map((userElem) => userElem.textContent)
   );
   for (const username of usernames) await getUser(username);
   // get fetched usernames
