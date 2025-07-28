@@ -1,15 +1,16 @@
 // ==UserScript==
 // @name         twitter-media-unblur
 // @namespace    feederbox.cc
-// @version      1.0
+// @version      1.1
 // @description  unblur all twitter sensitive media posts
 // @author       feederbox826
 // @match        https://twitter.com/*/media
+// @match        https://x.com/*/media
 // @icon         https://icons.duckduckgo.com/ip2/twitter.com.ico
 // @grant        none
 // ==/UserScript==
 
-const selector = 'div[role="button"] > span'
+const selector = 'button[type="button"] > span'
 const unhide = () => document.querySelectorAll(selector).forEach(e => e.click())
 
 unhide()
