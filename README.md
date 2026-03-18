@@ -1,11 +1,14 @@
 # Userscripts
 
 ## Stash-Box (StashDB/ FansDB)
-[db-noto-color](https://feederbox.cc/uscript/userscript/db-noto-color.user.js)
-- replace emojis with Noto Color Emoji for full support
+[box-fprint](https://feederbox.cc/uscript/userscript/box-fprint.user.js)
+- add hamming distance and duration diff 
 
 [db-hide-apikey](https://feederbox.cc/uscript/userscript/db-hide-apikey.user.js)
 - blur and hide apikey until hovered
+
+[db-noto-color](https://feederbox.cc/uscript/userscript/db-noto-color.user.js)
+- replace emojis with Noto Color Emoji for full support
 
 [stashdb-diff](https://feederbox.cc/uscript/userscript/stashdb-diff.user.js)
 - adds text diff to stashdb detail change boxes
@@ -40,12 +43,8 @@ Examples:
 [tags-checklist](https://feederbox.cc/uscript/userscript/tags-checklist.user.js)
 - indicates tags on StashDB with media on `tags.feederbox.cc`
 
-## Discourse
-[disco-blurimg](https://feederbox.cc/uscript/userscript/disco-blurimg.user.js)
-- blur images on discourse until hovered
-
 ## Other
-[redgifs-auto](https://feederbox.cc/uscript/userscript/ls-unblur.user.js)
+[ls-unblur](https://feederbox.cc/uscript/userscript/ls-unblur.user.js)
 - Unblur LifeSelector website
 
 [redgifs-auto](https://feederbox.cc/uscript/userscript/redgifs-auto.user.js)
@@ -53,3 +52,6 @@ Examples:
 
 [twitter-media-unblur](https://feederbox.cc/uscript/userscript/twitter-media-unblur.user.js)
 - unblurs all twitter media posts as you scroll
+
+[wp-proton-redir](https://feederbox.cc/uscript/userscript/wp-photon-redir.user.js)
+- redirects from 
