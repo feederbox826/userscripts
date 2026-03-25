@@ -61,8 +61,8 @@ class User {
       user.edit_count.accepted + user.edit_count.immediate_accepted;
     this.edit_reject =
       user.edit_count.rejected +
-      user.edit_count.immediate_rejected
-    this.edit_cancel = user.edit_count.canceled;
+      user.edit_count.immediate_rejected +
+      user.edit_count.canceled;
     this.edit_pending = user.edit_count.pending;
     // date of first closed edit
     this.edit_first = edit.edits.length
@@ -75,10 +75,10 @@ class User {
       user.vote_count.reject + user.vote_count.immediate_reject;
     // total votes
     this.vote_total = this.vote_abstain + this.vote_accept + this.vote_reject;
-    // total edits excluding canceled
+    // total edits
     this.total_edits = this.edit_accept + this.edit_reject + this.edit_pending;
     // accepted / (accepted + rejected)
-    this.edit_ratio = this.edit_accept / (this.edit_accept + this.edit_reject);
+    this.edit_ratio = this.edit_accept / this.total_edits;
     // <1mo since first edit closed, or no edits closed
     this.user_new = this.edit_first
       ? Date.now() - this.edit_first < MONTH
@@ -246,7 +246,7 @@ const generateUserCard = (user) => {
   const originalHTML = card.innerHTML;
   // add click to toggle
   card.addEventListener("click", (evt) => {
-    evt.preventDefault()    
+    evt.preventDefault()
     const expanded = card.dataset.expanded === "1";
     if (!expanded) {
       card.dataset.expanded = "1";
