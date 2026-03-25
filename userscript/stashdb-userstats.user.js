@@ -30,7 +30,7 @@ const roundThreshold = (number) => {
 }
 
 // clear cache if version mismatch
-const CACHEVERSION = 1;
+const CACHEVERSION = 2;
 const DEBUG_SKIP_CACHE = false;
 
 GM_addStyle(`
@@ -64,6 +64,7 @@ class User {
       user.edit_count.immediate_rejected +
       user.edit_count.canceled;
     this.edit_pending = user.edit_count.pending;
+    this.edit_cancel = user.edit_count.canceled
     // date of first closed edit
     this.edit_first = edit.edits.length
       ? new Date(edit.edits?.[0]?.closed)
@@ -269,6 +270,7 @@ edits:
   accepted: ${user.edit_accept}
   rejected: ${user.edit_reject}
   pending: ${user.edit_pending}
+  cancelled: ${user.edit_cancel}
   first edit: ${user.edit_first ? user.edit_first.toDateString() : "none"}
 votes:
   total: ${user.vote_total}
