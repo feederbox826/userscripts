@@ -24,7 +24,7 @@ const roundThreshold = (number) => {
   else if (number < 10) return "<10";
   const thresholds = [5000, 4000, 3000, 2000, 1000, 500, 100, 50, 10];
   for (const threshold of thresholds) {
-    if (number >= threshold && threshold >= 1000) return `${threshold * 0.01 }k`;
+    if (number >= threshold && threshold >= 1000) return `${threshold * 0.001 }k`;
     else if (number >= threshold) return `${threshold}`;
   }
 }
