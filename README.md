@@ -47,6 +47,9 @@ Examples:
 [ls-unblur](https://feederbox.cc/uscript/userscript/ls-unblur.user.js)
 - Unblur LifeSelector website
 
+[pport-nsfw](https://feederbox.cc/uscript/userscript/pport-nsfw.user.js)
+- purpleport un-censor without login
+
 [redgifs-auto](https://feederbox.cc/uscript/userscript/redgifs-auto.user.js)
 - Auto Unmute / Play / HD redgifs
 
