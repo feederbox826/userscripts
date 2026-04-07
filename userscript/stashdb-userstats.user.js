@@ -13,16 +13,17 @@
 // ==/UserScript==
 
 const editThreshold = (edit_ratio, total_edits) =>
-  edit_ratio > 0.99 && total_edits > 1000 ? "❇️"
+  edit_ratio >= 0.99 && total_edits > 3500 ? "❇️"
   : edit_ratio > 0.9 ? "🟩"
-  : edit_ratio > 0.7 ? "🟨"
+  : edit_ratio > 0.8 ? "🟨"
+  : edit_ratio > 0.5 ? "🟧"
   : edit_ratio = 0 ? "❓"
   : "🟥"
 
 const roundThreshold = (number) => {
   if (number == 0) return "0";
   else if (number < 10) return "<10";
-  const thresholds = [5000, 4000, 3000, 2000, 1000, 500, 100, 50, 10];
+  const thresholds = [25000, 20000, 15000, 10000, 9000, 8000, 7000, 6000, 5000, 4000, 3000, 2000, 1000, 500, 100, 50, 10];
   for (const threshold of thresholds) {
     if (number >= threshold && threshold >= 1000) return `${threshold * 0.001 }k`;
     else if (number >= threshold) return `${threshold}`;
@@ -61,8 +62,7 @@ class User {
       user.edit_count.accepted + user.edit_count.immediate_accepted;
     this.edit_reject =
       user.edit_count.rejected +
-      user.edit_count.immediate_rejected +
-      user.edit_count.canceled;
+      user.edit_count.immediate_rejected;
     this.edit_pending = user.edit_count.pending;
     this.edit_cancel = user.edit_count.canceled
     // date of first closed edit
@@ -77,7 +77,7 @@ class User {
     // total votes
     this.vote_total = this.vote_abstain + this.vote_accept + this.vote_reject;
     // total edits
-    this.total_edits = this.edit_accept + this.edit_reject + this.edit_pending;
+    this.total_edits = this.edit_accept + this.edit_reject + this.edit_pending  + this.edit_cancel;
     // accepted / (accepted + rejected)
     this.edit_ratio = this.edit_accept / this.total_edits;
     // <1mo since first edit closed, or no edits closed
